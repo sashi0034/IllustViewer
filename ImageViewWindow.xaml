@@ -1,0 +1,20 @@
+﻿<Window x:Class="IllustViewer.ImageViewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IllustViewer"
+        mc:Ignorable="d"
+        Title="Image View (Press 'F11' To Concentrate)"
+        Loaded="Window_Loaded"
+        Keyboard.KeyDown="Window_KeyDown"
+        Background="#333">
+    <ScrollViewer 
+        x:Name="scrollViewr"
+        MouseEnter="ScrollViewer_MouseEnter"
+        MouseLeave="ScrollViewer_MouseLeave">
+        <Image 
+            x:Name="imageView"
+            MouseDown="imageView_MouseDown"/>
+    </ScrollViewer>
+</Window>
