@@ -51,13 +51,20 @@ namespace IllustViewer
             {
                 window.TryLoadImage(name);
                 if (canSave) window.SetStragePath(stragePath);
-                window.Show();
+                showImageViewWindow(window);
             }
             catch (Exception ex)
             {
                 window.Close();
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void showImageViewWindow(ImageViewWindow window)
+        {
+            window.Left = this.Left;
+            window.Top = this.Top;
+            window.Show();
         }
 
         private void loadFromClipboadButton_Click(object sender, RoutedEventArgs e)
@@ -69,7 +76,7 @@ namespace IllustViewer
                 if (src == null) throw new Exception("クリップボードから画像を読み取れませんでした。");
                 window.TryLoadImage(src);
                 window.SetStragePath(stragePath);
-                window.Show();
+                showImageViewWindow(window);
             }
             catch (Exception ex)
             {

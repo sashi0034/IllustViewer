@@ -14,7 +14,7 @@ namespace IllustViewer
 
         public StragePath()
         {
-            directoryPath = "./stroge";
+            directoryPath = "./strage";
             CheckMakeNewDirectory();
         }
 
