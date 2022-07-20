@@ -10,6 +10,7 @@ namespace IllustViewer
     {
         private readonly string directoryPath;
         public string DirectoryPath => directoryPath;
+        public string DirectoryFullPath => System.IO.Path.GetFullPath(directoryPath);
 
         public StragePath()
         {

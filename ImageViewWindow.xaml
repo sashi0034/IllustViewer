@@ -31,6 +31,7 @@
 
         <Button x:Name="saveButton" 
                 Click="saveButton_Click"
-                Content="ローカルに保存" Width="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Top" Margin="0"/>
+                Visibility="Hidden"
+                Content="ストレージに保存" Width="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Top" Margin="0"/>
     </Grid>
 </Window>

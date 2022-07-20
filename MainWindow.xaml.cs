@@ -24,10 +24,11 @@ namespace IllustViewer
         public MainWindow()
         {
             InitializeComponent();
-            loadStrageImages();
+            checkLoadStrageImages();
         }
 
         StragePath stragePath = new StragePath();
+        List<String> createdStrageStackElement = new List<String>();
 
         private void grid_Drop(object sender, DragEventArgs e)
         {
@@ -37,24 +38,27 @@ namespace IllustViewer
                 foreach (var name in fileNames)
                 {
                     Debug.Print(name);
-
-                    var window = new ImageViewWindow(new Size(this.Width, this.Height));
-                    try
-                    {
-                        window.TryLoadImage(name);
-                        window.SetStragePath(stragePath);
-                        window.Show();
-                    }
-                    catch (Exception ex)
-                    {
-                        window.Close();
-                        MessageBox.Show(ex.Message);
-                    }
+                    createImageViewFromFileName(name, true);
                 }
-                
+
             }
         }
 
+        private void createImageViewFromFileName(string name, bool canSave)
+        {
+            var window = new ImageViewWindow(new Size(this.Width, this.Height));
+            try
+            {
+                window.TryLoadImage(name);
+                if (canSave) window.SetStragePath(stragePath);
+                window.Show();
+            }
+            catch (Exception ex)
+            {
+                window.Close();
+                MessageBox.Show(ex.Message);
+            }
+        }
 
         private void loadFromClipboadButton_Click(object sender, RoutedEventArgs e)
         {
@@ -99,30 +103,62 @@ namespace IllustViewer
             }
         }
 
-        private void loadStrageImages()
+        private void checkLoadStrageImages()
         {
             string[] files = System.IO.Directory.GetFiles(stragePath.DirectoryPath, "*.png", System.IO.SearchOption.AllDirectories);
             var fullPathList= files.Select(path => System.IO.Path.GetFullPath(path));
 
-
-            var baseSize = imageSrageStack.Height ;
-            const double margine = 10;
+            var baseSize = imageSrageStack.Height;
+            const double margin = 10;
 
             foreach (string filePath in fullPathList)
             {
+                if (createdStrageStackElement.Contains(filePath)) continue;
+                
                 Debug.Print(filePath);
-                var newElement = new System.Windows.Controls.Image();
 
-                newElement.Source = new BitmapImage(new Uri(filePath));
-                newElement.Width = baseSize;
-                newElement.Height = baseSize;
-                newElement.Margin = new System.Windows.Thickness(margine);
+                BitmapImage loadedImage;
+                try
+                {
+                    loadedImage = new BitmapImage(new Uri(filePath));
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
 
-                imageSrageStack.Children.Add(newElement);
+                var newContent = new System.Windows.Controls.ContentControl();
+                var newImage = new System.Windows.Controls.Image();
+
+                newContent.MouseDoubleClick += new MouseButtonEventHandler((sender, e) => { onClickedstrageImage(sender, e, filePath); });
+
+                newImage.Source = loadedImage;
+                newImage.Width = baseSize;
+                newImage.Height = baseSize;
+                newImage.Margin = new System.Windows.Thickness(margin);
+
+                newContent.Content = newImage;
+                imageSrageStack.Children.Add(newContent);
+                createdStrageStackElement.Add(filePath);
             }
         }
 
+        private void onClickedstrageImage(object sender, MouseButtonEventArgs e, string fileName)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                createImageViewFromFileName(fileName, false);
+            }
+        }
+        private void window_MouseEnter(object sender, MouseEventArgs e)
+        {
+            checkLoadStrageImages();
+        }
 
+        private void openStrageFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("EXPLORER.EXE", new List<String> { stragePath.DirectoryFullPath });
+        }
     }
 
 }

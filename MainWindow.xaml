@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IllustViewer"
         mc:Ignorable="d"
+        MouseEnter="window_MouseEnter"
         Title="やさしいイラストビュワー" Height="450" Width="800">
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Margin" Value="10"/>
         </Style>
-        <Style TargetType="Button">
+        <Style x:Key="RoundButton" TargetType="Button">
             <Setter Property="Width" Value="160"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="Template">
@@ -30,18 +31,24 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid  Background="#333">
+    <Grid  Background="#444"
+           AllowDrop="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
         <Grid 
-           AllowDrop="True"
-           Drop="grid_Drop">
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Margin="2"
+            Background="#333"
+            AllowDrop="True"
+            Drop="grid_Drop">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Label Content="画像ファイルをここにドロップするか、&#xa;クリップボードから画像を読み取って表示します。"/>
-                <Button x:Name="loadFromClipboadButton" Content="クリップボードから読み取り" Click="loadFromClipboadButton_Click"/>
+                <Label Content="画像ファイルをここにドロップするか、&#xa;クリップボードから画像を読み取って表示します。&#xa;ストレージビューにある画像をダブルクリックしても表示できます。"/>
+                <Button x:Name="loadFromClipboadButton" Content="クリップボードから読み取り" Click="loadFromClipboadButton_Click" Style="{DynamicResource RoundButton}"/>
                 <Label Foreground="#aaa" Content="イラストウィンドウ上で'F11'キーを推せば&#xa;イラストウィンドウのボーダー表示を切り替えます。"/>
             </StackPanel>
         </Grid>
@@ -55,6 +62,13 @@
                 <StackPanel x:Name="imageSrageStack" Orientation="Horizontal"/>
 
             </ScrollViewer>
+           
+        </Grid>
+        <Grid Grid.Row="2">
+            <Button x:Name="openStrageFolderButton"  
+                    Click="openStrageFolderButton_Click"
+                    Content="エクスプローラーでストレージを開く"
+                    Padding="10 2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2" Width="Auto" Background="#778" Foreground="White"/>
         </Grid>
     </Grid>
 </Window>
