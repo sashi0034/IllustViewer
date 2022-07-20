@@ -8,13 +8,29 @@
         Title="Image View (Press 'F11' To Concentrate)"
         Loaded="Window_Loaded"
         Keyboard.KeyDown="Window_KeyDown"
+        MouseEnter="window_MouseEnter"
+        MouseLeave="window_MouseLeave"
         Background="#333">
-    <ScrollViewer 
-        x:Name="scrollViewr"
-        MouseEnter="ScrollViewer_MouseEnter"
-        MouseLeave="ScrollViewer_MouseLeave">
-        <Image 
-            x:Name="imageView"
-            MouseDown="imageView_MouseDown"/>
-    </ScrollViewer>
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#a445"/>
+            <Setter Property="BorderBrush" Value="#a666"/>
+            
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <ScrollViewer             
+            x:Name="scrollViewr">
+                <Image 
+                    x:Name="imageView"
+                    MouseDown="imageView_MouseDown"/>
+        </ScrollViewer>
+
+        <Button x:Name="saveButton" 
+                Click="saveButton_Click"
+                Content="ローカルに保存" Width="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Top" Margin="0"/>
+    </Grid>
 </Window>

@@ -11,15 +11,11 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Margin" Value="10"/>
         </Style>
-        
-    </Window.Resources>
-    <Grid  Background="#333" 
-           AllowDrop="True"
-           Drop="grid_Drop">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Label Content="画像ファイルをここにドロップするか、&#xa;クリップボードから画像を読み取って表示します。"/>
-            <Button x:Name="loadFromClipboadButton" Width="160" Height="40" Content="クリップボードから読み取り" Click="loadFromClipboadButton_Click">
-                <Button.Template>
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="160"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Name="border"
                     BorderThickness="1"
@@ -30,9 +26,35 @@
                                   HorizontalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
-                </Button.Template>
-            </Button>
-            <Label Foreground="#aaa" Content="イラストウィンドウ上で'F11'キーを推せば&#xa;イラストウィンドウのボーダー表示を切り替えます。"/>
-        </StackPanel>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid  Background="#333">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid 
+           AllowDrop="True"
+           Drop="grid_Drop">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="画像ファイルをここにドロップするか、&#xa;クリップボードから画像を読み取って表示します。"/>
+                <Button x:Name="loadFromClipboadButton" Content="クリップボードから読み取り" Click="loadFromClipboadButton_Click"/>
+                <Label Foreground="#aaa" Content="イラストウィンドウ上で'F11'キーを推せば&#xa;イラストウィンドウのボーダー表示を切り替えます。"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" Background="#2a2a2a">
+            <ScrollViewer             
+                VerticalScrollBarVisibility="Disabled"
+                HorizontalScrollBarVisibility="Visible"
+                x:Name="strageScrollViewr">
+
+                <StackPanel x:Name="imageSrageStack" Orientation="Horizontal"/>
+
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>

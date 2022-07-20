@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace IllustViewer
     public partial class ImageViewWindow : Window
     {
         private bool isWindowStyleBorderless = false;
+        private StragePath? stragePathRef = null;
+        private UppingFlag imageUnsavedFlag = new();
 
         public ImageViewWindow(Size windowSize)
         {
@@ -41,8 +44,14 @@ namespace IllustViewer
             imageView.Source = src;
         }
 
+        public void SetStragePath(StragePath stragePath)
+        {
+            Debug.Assert(stragePathRef != stragePath);
+            stragePathRef = stragePath;
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {}
+        { }
 
 
 
@@ -84,16 +93,71 @@ namespace IllustViewer
             }
         }
 
-        private void ScrollViewer_MouseEnter(object sender, MouseEventArgs e)
+        private void window_MouseEnter(object sender, MouseEventArgs e)
         {
-            scrollViewr.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
-            scrollViewr.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            changeViewIfWindowForcused(true);
         }
 
-        private void ScrollViewer_MouseLeave(object sender, MouseEventArgs e)
+        private void window_MouseLeave(object sender, MouseEventArgs e)
         {
-            scrollViewr.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scrollViewr.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            changeViewIfWindowForcused(false);
+        }
+
+        private void changeViewIfWindowForcused(bool isMouseInScreen)
+        {
+            if (isMouseInScreen)
+            {
+                scrollViewr.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                scrollViewr.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                saveButton.Visibility = canShowImageSaveButton() ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else
+            {
+                scrollViewr.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                scrollViewr.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                saveButton.Visibility = Visibility.Collapsed;
+
+            }
+        }
+
+        private bool canShowImageSaveButton()
+        {
+            return stragePathRef != null && imageUnsavedFlag.IsUp;
+        }
+
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                trySaveImageSource();
+                MessageBox.Show("画像を保存しました。");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("画像に失敗しました。");
+            }
+        }
+
+        private void trySaveImageSource()
+        {
+            string fileName = getDateHashText(DateTime.Now) + ".png";
+            string path = stragePathRef.MakeFilePath(fileName);
+
+            using (FileStream stream = new FileStream(path, FileMode.Create))
+            {
+                ImageSource source = imageView.Source;
+                BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create((BitmapSource)source));
+                encoder.Save(stream);
+            }
+            imageUnsavedFlag.MakeDown();
+        }
+
+        private string getDateHashText(DateTime dateTime)
+        {
+            const string format = "yyyy_MMddHH_mmss";
+            string text = dateTime.ToString(format);
+            return text;
         }
     }
 }

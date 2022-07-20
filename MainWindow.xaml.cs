@@ -24,7 +24,10 @@ namespace IllustViewer
         public MainWindow()
         {
             InitializeComponent();
+            loadStrageImages();
         }
+
+        StragePath stragePath = new StragePath();
 
         private void grid_Drop(object sender, DragEventArgs e)
         {
@@ -39,6 +42,7 @@ namespace IllustViewer
                     try
                     {
                         window.TryLoadImage(name);
+                        window.SetStragePath(stragePath);
                         window.Show();
                     }
                     catch (Exception ex)
@@ -60,6 +64,7 @@ namespace IllustViewer
                 var src = GetClipboardBitmapDIB();
                 if (src == null) throw new Exception("クリップボードから画像を読み取れませんでした。");
                 window.TryLoadImage(src);
+                window.SetStragePath(stragePath);
                 window.Show();
             }
             catch (Exception ex)
@@ -94,5 +99,30 @@ namespace IllustViewer
             }
         }
 
+        private void loadStrageImages()
+        {
+            string[] files = System.IO.Directory.GetFiles(stragePath.DirectoryPath, "*.png", System.IO.SearchOption.AllDirectories);
+            var fullPathList= files.Select(path => System.IO.Path.GetFullPath(path));
+
+
+            var baseSize = imageSrageStack.Height ;
+            const double margine = 10;
+
+            foreach (string filePath in fullPathList)
+            {
+                Debug.Print(filePath);
+                var newElement = new System.Windows.Controls.Image();
+
+                newElement.Source = new BitmapImage(new Uri(filePath));
+                newElement.Width = baseSize;
+                newElement.Height = baseSize;
+                newElement.Margin = new System.Windows.Thickness(margine);
+
+                imageSrageStack.Children.Add(newElement);
+            }
+        }
+
+
     }
+
 }
